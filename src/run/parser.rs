@@ -1,5 +1,6 @@
 use crate::run::tx::TransactionLine;
 use csv::Reader;
+use log::{debug, trace};
 use std::error::Error;
 use std::path::Path;
 
@@ -10,19 +11,19 @@ pub fn parse_transactions_file(
     let mut vec: Vec<TransactionLine> = Vec::new();
 
     for result in rdr.deserialize() {
-        println!("Reading line {:?}", result);
-        let record: TransactionLine = result?;
-        vec.push(record);
-        // println!("{:#?}", record);
-        // match result {
-        //     Ok(record) => {
-        //         println!("record {:?}", record);
-        //         let _ = parse_record(record);
-        //     }
-        //     Err(err) => {
-        //         return Err(From::from(err));
-        //     }
-        // }
+        debug!("Parsing line {:?}", result);
+        // let record: TransactionLine = result?;
+        // vec.push(record);
+        match result {
+            Ok(record) => {
+                trace!("record {:?}", record);
+                vec.push(record);
+                // let _ = parse_record(record);
+            }
+            Err(err) => {
+                return Err(From::from(err));
+            }
+        }
     }
 
     Ok(vec)
@@ -94,14 +95,6 @@ mod tests {
         );
     }
 
-    // TODO: try to check error message.
-    #[test]
-    fn parser_returns_error_if_file_does_not_exist() {
-        let res = parse_transactions_file(&"tests/missing_file.csv");
-
-        assert!(res.is_err());
-    }
-
     #[test]
     fn parser_says_none_if_unknown_kind() {
         let res = parse_transactions_file(&"tests/fixtures/unknown_kind.csv");
@@ -130,5 +123,17 @@ mod tests {
                 amount: "2.0".to_string(),
             }
         );
+    }
+
+    // TODO: try to check error message.
+    #[test]
+    fn parser_returns_error_if_file_does_not_exist() {
+        assert!(parse_transactions_file(&"tests/missing_file.csv").is_err());
+    }
+
+    // TODO: try to check error message.
+    #[test]
+    fn parser_returns_error_if_missing_a_column() {
+        assert!(parse_transactions_file(&"tests/missing_column.csv").is_err());
     }
 }

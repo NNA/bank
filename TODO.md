@@ -9,8 +9,10 @@
   - [x] Skip first line
   - [x] Handle wrong format
   - [ ] Harden parsing (headers, double quotes)... 
-- [ ] Parse a line
-  - [ ] Handle parsing error (type not supported, not enough columns) : skip the line
+- [x] Parse a line
+  - [x] transaction Type not supported: NON BLOCKING : say None & continue with the file
+  - [ ] Not enough columns : BLOCKING : return Parsing error
+
 - [ ] Improve CSV Perf : See [here](https://docs.rs/csv/1.1.6/csv/tutorial/index.html#amortizing-allocations)
   - [ ] Handle non-text format ? Looks complicated ....https://github.com/keirlawson/binaryornot/blob/master/src/lib.rs
 - [ ] Avoid creating new Vec on each line (aka: Reuse same buffer) see https://stackoverflow.com/questions/45882329/read-large-files-line-by-line-in-rust

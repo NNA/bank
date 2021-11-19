@@ -5,6 +5,8 @@ use std::env;
 use std::process;
 
 fn main() {
+    env_logger::init();
+
     let args: Vec<String> = env::args().collect();
 
     let config = Config::new(&args).unwrap_or_else(|err| {
