@@ -5,9 +5,9 @@
   - [x] handle parameter missing
 - [x] Read file synchronously using buffer
   - [x] Handle file not found
-- [ ] Read file using CSV lib 
-  - [ ] Skip first line
-  - [ ] Handle wrong format
+- [x] Read file using CSV lib 
+  - [x] Skip first line
+  - [x] Handle wrong format
   - [ ] Harden parsing (headers, double quotes)... 
 - [ ] Parse a line
   - [ ] Handle parsing error (type not supported, not enough columns) : skip the line

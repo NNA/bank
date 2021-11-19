@@ -13,7 +13,8 @@ pub enum TransactionKind {
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct TransactionLine {
     #[serde(rename = "type")]
-    pub kind: TransactionKind,
+    #[serde(deserialize_with = "csv::invalid_option")]
+    pub kind: Option<TransactionKind>,
     #[serde(rename = "client")]
     pub client_id: u16,
     #[serde(rename = "tx")]

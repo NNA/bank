@@ -36,15 +36,17 @@ mod tests {
 
     #[test]
     fn parser_works_if_given_a_correct_file() {
-        let ok_res: Vec<TransactionLine> =
-            parse_transactions_file(&"tests/fixtures/regular_tx.csv").unwrap();
+        let res = parse_transactions_file(&"tests/fixtures/regular_tx.csv");
 
-        assert_eq!(ok_res.len(), 5);
+        assert!(res.is_ok());
+        let vec: Vec<TransactionLine> = res.unwrap();
+
+        assert_eq!(vec.len(), 5);
 
         assert_eq!(
-            ok_res[0],
+            vec[0],
             TransactionLine {
-                kind: Deposit,
+                kind: Some(Deposit),
                 client_id: 1,
                 tx_id: 1,
                 amount: "1.0".to_string(),
@@ -52,9 +54,9 @@ mod tests {
         );
 
         assert_eq!(
-            ok_res[1],
+            vec[1],
             TransactionLine {
-                kind: Deposit,
+                kind: Some(Deposit),
                 client_id: 2,
                 tx_id: 2,
                 amount: "2.0".to_string(),
@@ -62,9 +64,9 @@ mod tests {
         );
 
         assert_eq!(
-            ok_res[2],
+            vec[2],
             TransactionLine {
-                kind: Deposit,
+                kind: Some(Deposit),
                 client_id: 1,
                 tx_id: 3,
                 amount: "2.0".to_string(),
@@ -72,9 +74,9 @@ mod tests {
         );
 
         assert_eq!(
-            ok_res[3],
+            vec[3],
             TransactionLine {
-                kind: Withdrawal,
+                kind: Some(Withdrawal),
                 client_id: 1,
                 tx_id: 4,
                 amount: "1.5".to_string(),
@@ -82,12 +84,50 @@ mod tests {
         );
 
         assert_eq!(
-            ok_res[4],
+            vec[4],
             TransactionLine {
-                kind: Withdrawal,
+                kind: Some(Withdrawal),
                 client_id: 2,
                 tx_id: 5,
                 amount: "3.0".to_string(),
+            }
+        );
+    }
+
+    // TODO: try to check error message.
+    #[test]
+    fn parser_returns_error_if_file_does_not_exist() {
+        let res = parse_transactions_file(&"tests/missing_file.csv");
+
+        assert!(res.is_err());
+    }
+
+    #[test]
+    fn parser_says_none_if_unknown_kind() {
+        let res = parse_transactions_file(&"tests/fixtures/unknown_kind.csv");
+
+        assert!(res.is_ok());
+        let vec: Vec<TransactionLine> = res.unwrap();
+
+        assert_eq!(vec.len(), 2);
+
+        assert_eq!(
+            vec[0],
+            TransactionLine {
+                kind: None,
+                client_id: 1,
+                tx_id: 1,
+                amount: "1.0".to_string(),
+            }
+        );
+
+        assert_eq!(
+            vec[1],
+            TransactionLine {
+                kind: Some(Deposit),
+                client_id: 2,
+                tx_id: 2,
+                amount: "2.0".to_string(),
             }
         );
     }
