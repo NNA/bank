@@ -1,5 +1,4 @@
 use serde::Deserialize;
-use std::collections::HashMap;
 
 #[derive(Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "lowercase")]
@@ -22,30 +21,3 @@ pub struct RawTransaction {
 }
 
 pub type RawTransactionsList = Vec<RawTransaction>;
-
-#[derive(Debug)]
-pub struct Deposit {
-    pub id: u32,
-    pub account_id: u16,
-    pub amount: u32,
-}
-
-#[derive(Debug)]
-pub struct Withdrawal {
-    id: u32,
-    account_id: u16,
-    amount: u32,
-}
-
-pub type Decimal = u64;
-pub type AccountId = u16;
-
-#[derive(Debug)]
-pub struct AccountBalance {
-    // total will be computed
-    pub available: Decimal,
-    pub held: Decimal,
-    pub locked: bool,
-}
-
-pub type BalanceBook = HashMap<AccountId, AccountBalance>;

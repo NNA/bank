@@ -1,10 +1,9 @@
-use crate::run::tx::AccountBalance;
-use crate::run::tx::BalanceBook;
-use crate::run::tx::Deposit;
-use crate::run::tx::RawTransaction;
-use crate::run::tx::RawTransactionsList;
-use crate::run::tx::TransactionKind;
-use log::{debug, warn};
+use crate::models::account_balance::AccountBalance;
+use crate::models::balance_book::BalanceBook;
+use crate::models::raw_tx::RawTransactionsList;
+use crate::models::raw_tx::TransactionKind;
+use crate::models::tx::Deposit;
+use log::warn;
 
 pub fn compute_balance(txs: RawTransactionsList) -> BalanceBook {
     let mut b_book: BalanceBook = BalanceBook::new();
@@ -18,7 +17,7 @@ pub fn compute_balance(txs: RawTransactionsList) -> BalanceBook {
                             account.process_deposit(deposit);
                         } else {
                             let id = deposit.account_id;
-                            let ab = AccountBalance::new();
+                            let mut ab = AccountBalance::new();
                             ab.process_deposit(deposit);
                             b_book.insert(id, ab);
                         };
@@ -36,41 +35,13 @@ pub fn compute_balance(txs: RawTransactionsList) -> BalanceBook {
     b_book
 }
 
-impl AccountBalance {
-    pub fn new() -> Self {
-        AccountBalance {
-            ..Default::default()
-        }
-    }
-    pub fn process_deposit(&self, deposit: Deposit) {
-        debug!("processing deposit {:?}", deposit);
-    }
-}
+// trait Accountable {
+//     fn process_transaction(&self);
+// }
 
-impl Default for AccountBalance {
-    fn default() -> Self {
-        AccountBalance {
-            locked: false,
-            available: 0,
-            held: 0,
-        }
-    }
-}
-
-impl TryFrom<RawTransaction> for Deposit {
-    type Error = String;
-
-    fn try_from(raw_tx: RawTransaction) -> Result<Self, Self::Error> {
-        if let None = raw_tx.client {
-            return Err("A Deposit must have a client".to_string());
-        }
-        if let None = raw_tx.tx {
-            return Err("A Deposit must have a valid transaction id".to_string());
-        }
-        Ok(Deposit {
-            id: raw_tx.tx.unwrap(),
-            account_id: raw_tx.client.unwrap(),
-            amount: 10,
-        })
-    }
-}
+// impl Accountable for Deposit {
+// 	pub fn process_transaction(&mut self, deposit: Deposit) {
+//         self.available += deposit.amount as Decimal;
+//         //TODO: check overflow
+//     }
+// }

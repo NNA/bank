@@ -1,4 +1,4 @@
-use crate::run::tx::RawTransactionsList;
+use crate::models::raw_tx::RawTransactionsList;
 use csv::Reader;
 use log::{debug, trace};
 use std::error::Error;
@@ -32,8 +32,9 @@ pub fn parse_transactions_file(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::run::tx::RawTransaction;
-    use crate::run::tx::TransactionKind::*;
+
+    use crate::models::raw_tx::TransactionKind;
+    use crate::models::raw_tx::{RawTransaction, RawTransactionsList};
 
     #[test]
     fn parser_works_if_given_a_correct_file() {
@@ -47,7 +48,7 @@ mod tests {
         assert_eq!(
             txs[0],
             RawTransaction {
-                kind: Some(Deposit),
+                kind: Some(TransactionKind::Deposit),
                 client: Some(1),
                 tx: Some(1),
                 amount: Some("1.0".to_string()),
@@ -57,7 +58,7 @@ mod tests {
         assert_eq!(
             txs[1],
             RawTransaction {
-                kind: Some(Deposit),
+                kind: Some(TransactionKind::Deposit),
                 client: Some(2),
                 tx: Some(2),
                 amount: Some("2.0".to_string()),
@@ -67,7 +68,7 @@ mod tests {
         assert_eq!(
             txs[2],
             RawTransaction {
-                kind: Some(Deposit),
+                kind: Some(TransactionKind::Deposit),
                 client: Some(1),
                 tx: Some(3),
                 amount: Some("2.0".to_string()),
@@ -77,7 +78,7 @@ mod tests {
         assert_eq!(
             txs[3],
             RawTransaction {
-                kind: Some(Withdrawal),
+                kind: Some(TransactionKind::Withdrawal),
                 client: Some(1),
                 tx: Some(4),
                 amount: Some("1.5".to_string()),
@@ -87,7 +88,7 @@ mod tests {
         assert_eq!(
             txs[4],
             RawTransaction {
-                kind: Some(Withdrawal),
+                kind: Some(TransactionKind::Withdrawal),
                 client: Some(2),
                 tx: Some(5),
                 amount: Some("3.0".to_string()),
@@ -117,7 +118,7 @@ mod tests {
         assert_eq!(
             txs[1],
             RawTransaction {
-                kind: Some(Deposit),
+                kind: Some(TransactionKind::Deposit),
                 client: Some(2),
                 tx: Some(2),
                 amount: Some("2.0".to_string()),
@@ -137,7 +138,7 @@ mod tests {
         assert_eq!(
             txs[0],
             RawTransaction {
-                kind: Some(Deposit),
+                kind: Some(TransactionKind::Deposit),
                 client: None,
                 tx: Some(1),
                 amount: Some("1.0".to_string()),
@@ -147,7 +148,7 @@ mod tests {
         assert_eq!(
             txs[1],
             RawTransaction {
-                kind: Some(Deposit),
+                kind: Some(TransactionKind::Deposit),
                 client: Some(2),
                 tx: Some(2),
                 amount: Some("2.0".to_string()),
@@ -167,7 +168,7 @@ mod tests {
         assert_eq!(
             txs[0],
             RawTransaction {
-                kind: Some(Deposit),
+                kind: Some(TransactionKind::Deposit),
                 client: Some(1),
                 tx: None,
                 amount: Some("1.0".to_string()),
@@ -177,7 +178,7 @@ mod tests {
         assert_eq!(
             txs[1],
             RawTransaction {
-                kind: Some(Deposit),
+                kind: Some(TransactionKind::Deposit),
                 client: Some(2),
                 tx: Some(2),
                 amount: Some("2.0".to_string()),
@@ -197,7 +198,7 @@ mod tests {
         assert_eq!(
             txs[0],
             RawTransaction {
-                kind: Some(Deposit),
+                kind: Some(TransactionKind::Deposit),
                 client: Some(1),
                 tx: Some(1),
                 amount: None,
@@ -207,7 +208,7 @@ mod tests {
         assert_eq!(
             txs[1],
             RawTransaction {
-                kind: Some(Deposit),
+                kind: Some(TransactionKind::Deposit),
                 client: Some(2),
                 tx: Some(2),
                 amount: Some("2.0".to_string()),
