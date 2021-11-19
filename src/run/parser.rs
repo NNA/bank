@@ -1,4 +1,4 @@
-use crate::run::tx::TransactionLine;
+use crate::run::tx::RawTransactionsList;
 use csv::Reader;
 use log::{debug, trace};
 use std::error::Error;
@@ -6,18 +6,18 @@ use std::path::Path;
 
 pub fn parse_transactions_file(
     file: &dyn AsRef<Path>,
-) -> Result<Vec<TransactionLine>, Box<dyn Error>> {
+) -> Result<RawTransactionsList, Box<dyn Error>> {
     let mut rdr = Reader::from_path(file)?;
-    let mut vec: Vec<TransactionLine> = Vec::new();
+    let mut txs: RawTransactionsList = RawTransactionsList::new();
 
     for result in rdr.deserialize() {
         debug!("Parsing line {:?}", result);
-        // let record: TransactionLine = result?;
-        // vec.push(record);
+        // let record: RawTransaction = result?;
+        // txs.push(record);
         match result {
             Ok(record) => {
                 trace!("record {:?}", record);
-                vec.push(record);
+                txs.push(record);
                 // let _ = parse_record(record);
             }
             Err(err) => {
@@ -26,27 +26,27 @@ pub fn parse_transactions_file(
         }
     }
 
-    Ok(vec)
+    Ok(txs)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::run::tx::RawTransaction;
     use crate::run::tx::TransactionKind::*;
-    use crate::run::tx::TransactionLine;
 
     #[test]
     fn parser_works_if_given_a_correct_file() {
         let res = parse_transactions_file(&"tests/fixtures/regular_tx.csv");
 
         assert!(res.is_ok());
-        let vec: Vec<TransactionLine> = res.unwrap();
+        let txs: RawTransactionsList = res.unwrap();
 
-        assert_eq!(vec.len(), 5);
+        assert_eq!(txs.len(), 5);
 
         assert_eq!(
-            vec[0],
-            TransactionLine {
+            txs[0],
+            RawTransaction {
                 kind: Some(Deposit),
                 client_id: Some(1),
                 tx_id: Some(1),
@@ -55,8 +55,8 @@ mod tests {
         );
 
         assert_eq!(
-            vec[1],
-            TransactionLine {
+            txs[1],
+            RawTransaction {
                 kind: Some(Deposit),
                 client_id: Some(2),
                 tx_id: Some(2),
@@ -65,8 +65,8 @@ mod tests {
         );
 
         assert_eq!(
-            vec[2],
-            TransactionLine {
+            txs[2],
+            RawTransaction {
                 kind: Some(Deposit),
                 client_id: Some(1),
                 tx_id: Some(3),
@@ -75,8 +75,8 @@ mod tests {
         );
 
         assert_eq!(
-            vec[3],
-            TransactionLine {
+            txs[3],
+            RawTransaction {
                 kind: Some(Withdrawal),
                 client_id: Some(1),
                 tx_id: Some(4),
@@ -85,8 +85,8 @@ mod tests {
         );
 
         assert_eq!(
-            vec[4],
-            TransactionLine {
+            txs[4],
+            RawTransaction {
                 kind: Some(Withdrawal),
                 client_id: Some(2),
                 tx_id: Some(5),
@@ -100,13 +100,13 @@ mod tests {
         let res = parse_transactions_file(&"tests/fixtures/unknown_kind.csv");
 
         assert!(res.is_ok());
-        let vec: Vec<TransactionLine> = res.unwrap();
+        let txs: RawTransactionsList = res.unwrap();
 
-        assert_eq!(vec.len(), 2);
+        assert_eq!(txs.len(), 2);
 
         assert_eq!(
-            vec[0],
-            TransactionLine {
+            txs[0],
+            RawTransaction {
                 kind: None,
                 client_id: Some(1),
                 tx_id: Some(1),
@@ -115,8 +115,8 @@ mod tests {
         );
 
         assert_eq!(
-            vec[1],
-            TransactionLine {
+            txs[1],
+            RawTransaction {
                 kind: Some(Deposit),
                 client_id: Some(2),
                 tx_id: Some(2),
@@ -130,13 +130,13 @@ mod tests {
         let res = parse_transactions_file(&"tests/fixtures/missing_client.csv");
 
         assert!(res.is_ok());
-        let vec: Vec<TransactionLine> = res.unwrap();
+        let txs: RawTransactionsList = res.unwrap();
 
-        assert_eq!(vec.len(), 2);
+        assert_eq!(txs.len(), 2);
 
         assert_eq!(
-            vec[0],
-            TransactionLine {
+            txs[0],
+            RawTransaction {
                 kind: Some(Deposit),
                 client_id: None,
                 tx_id: Some(1),
@@ -145,8 +145,8 @@ mod tests {
         );
 
         assert_eq!(
-            vec[1],
-            TransactionLine {
+            txs[1],
+            RawTransaction {
                 kind: Some(Deposit),
                 client_id: Some(2),
                 tx_id: Some(2),
@@ -160,13 +160,13 @@ mod tests {
         let res = parse_transactions_file(&"tests/fixtures/missing_tx.csv");
 
         assert!(res.is_ok());
-        let vec: Vec<TransactionLine> = res.unwrap();
+        let txs: RawTransactionsList = res.unwrap();
 
-        assert_eq!(vec.len(), 2);
+        assert_eq!(txs.len(), 2);
 
         assert_eq!(
-            vec[0],
-            TransactionLine {
+            txs[0],
+            RawTransaction {
                 kind: Some(Deposit),
                 client_id: Some(1),
                 tx_id: None,
@@ -175,8 +175,8 @@ mod tests {
         );
 
         assert_eq!(
-            vec[1],
-            TransactionLine {
+            txs[1],
+            RawTransaction {
                 kind: Some(Deposit),
                 client_id: Some(2),
                 tx_id: Some(2),
@@ -190,13 +190,13 @@ mod tests {
         let res = parse_transactions_file(&"tests/fixtures/missing_amount.csv");
 
         assert!(res.is_ok());
-        let vec: Vec<TransactionLine> = res.unwrap();
+        let txs: RawTransactionsList = res.unwrap();
 
-        assert_eq!(vec.len(), 2);
+        assert_eq!(txs.len(), 2);
 
         assert_eq!(
-            vec[0],
-            TransactionLine {
+            txs[0],
+            RawTransaction {
                 kind: Some(Deposit),
                 client_id: Some(1),
                 tx_id: Some(1),
@@ -205,8 +205,8 @@ mod tests {
         );
 
         assert_eq!(
-            vec[1],
-            TransactionLine {
+            txs[1],
+            RawTransaction {
                 kind: Some(Deposit),
                 client_id: Some(2),
                 tx_id: Some(2),

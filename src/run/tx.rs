@@ -11,7 +11,7 @@ pub enum TransactionKind {
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
-pub struct TransactionLine {
+pub struct RawTransaction {
     #[serde(rename = "type")]
     #[serde(deserialize_with = "csv::invalid_option")]
     pub kind: Option<TransactionKind>,
@@ -21,3 +21,5 @@ pub struct TransactionLine {
     pub tx_id: Option<u32>,
     pub amount: Option<String>,
 }
+
+pub type RawTransactionsList = Vec<RawTransaction>;
