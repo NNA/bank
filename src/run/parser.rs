@@ -48,9 +48,9 @@ mod tests {
             vec[0],
             TransactionLine {
                 kind: Some(Deposit),
-                client_id: 1,
-                tx_id: 1,
-                amount: "1.0".to_string(),
+                client_id: Some(1),
+                tx_id: Some(1),
+                amount: Some("1.0".to_string()),
             }
         );
 
@@ -58,9 +58,9 @@ mod tests {
             vec[1],
             TransactionLine {
                 kind: Some(Deposit),
-                client_id: 2,
-                tx_id: 2,
-                amount: "2.0".to_string(),
+                client_id: Some(2),
+                tx_id: Some(2),
+                amount: Some("2.0".to_string()),
             }
         );
 
@@ -68,9 +68,9 @@ mod tests {
             vec[2],
             TransactionLine {
                 kind: Some(Deposit),
-                client_id: 1,
-                tx_id: 3,
-                amount: "2.0".to_string(),
+                client_id: Some(1),
+                tx_id: Some(3),
+                amount: Some("2.0".to_string()),
             }
         );
 
@@ -78,9 +78,9 @@ mod tests {
             vec[3],
             TransactionLine {
                 kind: Some(Withdrawal),
-                client_id: 1,
-                tx_id: 4,
-                amount: "1.5".to_string(),
+                client_id: Some(1),
+                tx_id: Some(4),
+                amount: Some("1.5".to_string()),
             }
         );
 
@@ -88,15 +88,15 @@ mod tests {
             vec[4],
             TransactionLine {
                 kind: Some(Withdrawal),
-                client_id: 2,
-                tx_id: 5,
-                amount: "3.0".to_string(),
+                client_id: Some(2),
+                tx_id: Some(5),
+                amount: Some("3.0".to_string()),
             }
         );
     }
 
     #[test]
-    fn parser_says_none_if_unknown_kind() {
+    fn parser_works_but_says_none_if_unknown_kind() {
         let res = parse_transactions_file(&"tests/fixtures/unknown_kind.csv");
 
         assert!(res.is_ok());
@@ -108,9 +108,9 @@ mod tests {
             vec[0],
             TransactionLine {
                 kind: None,
-                client_id: 1,
-                tx_id: 1,
-                amount: "1.0".to_string(),
+                client_id: Some(1),
+                tx_id: Some(1),
+                amount: Some("1.0".to_string()),
             }
         );
 
@@ -118,9 +118,99 @@ mod tests {
             vec[1],
             TransactionLine {
                 kind: Some(Deposit),
-                client_id: 2,
-                tx_id: 2,
-                amount: "2.0".to_string(),
+                client_id: Some(2),
+                tx_id: Some(2),
+                amount: Some("2.0".to_string()),
+            }
+        );
+    }
+
+    #[test]
+    fn parser_works_but_says_none_if_client_missing() {
+        let res = parse_transactions_file(&"tests/fixtures/missing_client.csv");
+
+        assert!(res.is_ok());
+        let vec: Vec<TransactionLine> = res.unwrap();
+
+        assert_eq!(vec.len(), 2);
+
+        assert_eq!(
+            vec[0],
+            TransactionLine {
+                kind: Some(Deposit),
+                client_id: None,
+                tx_id: Some(1),
+                amount: Some("1.0".to_string()),
+            }
+        );
+
+        assert_eq!(
+            vec[1],
+            TransactionLine {
+                kind: Some(Deposit),
+                client_id: Some(2),
+                tx_id: Some(2),
+                amount: Some("2.0".to_string()),
+            }
+        );
+    }
+
+    #[test]
+    fn parser_works_but_says_none_if_tx_missing() {
+        let res = parse_transactions_file(&"tests/fixtures/missing_tx.csv");
+
+        assert!(res.is_ok());
+        let vec: Vec<TransactionLine> = res.unwrap();
+
+        assert_eq!(vec.len(), 2);
+
+        assert_eq!(
+            vec[0],
+            TransactionLine {
+                kind: Some(Deposit),
+                client_id: Some(1),
+                tx_id: None,
+                amount: Some("1.0".to_string()),
+            }
+        );
+
+        assert_eq!(
+            vec[1],
+            TransactionLine {
+                kind: Some(Deposit),
+                client_id: Some(2),
+                tx_id: Some(2),
+                amount: Some("2.0".to_string()),
+            }
+        );
+    }
+
+    #[test]
+    fn parser_works_but_says_none_if_amount_missing() {
+        let res = parse_transactions_file(&"tests/fixtures/missing_amount.csv");
+
+        assert!(res.is_ok());
+        let vec: Vec<TransactionLine> = res.unwrap();
+
+        assert_eq!(vec.len(), 2);
+
+        assert_eq!(
+            vec[0],
+            TransactionLine {
+                kind: Some(Deposit),
+                client_id: Some(1),
+                tx_id: Some(1),
+                amount: None,
+            }
+        );
+
+        assert_eq!(
+            vec[1],
+            TransactionLine {
+                kind: Some(Deposit),
+                client_id: Some(2),
+                tx_id: Some(2),
+                amount: Some("2.0".to_string()),
             }
         );
     }

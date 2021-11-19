@@ -17,7 +17,7 @@ test:
 
 .PHONY: run
 run:
-	cargo run -- ./tests/fixtures/missing_column.csv > /tmp/output.txt
+	cargo run -- ./tests/fixtures/regular_tx.csv > /tmp/output.txt
 
 .PHONY: tdd
 tdd:

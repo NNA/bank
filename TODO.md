@@ -10,8 +10,11 @@
   - [x] Handle wrong format
   - [ ] Harden parsing (headers, double quotes)... 
 - [x] Parse a line
-  - [x] transaction Type not supported: NON BLOCKING : say None & continue with the file
-  - [ ] Not enough columns : BLOCKING : return Parsing error
+  - [x] Not enough columns : BLOCKING : return Parsing error (can affect other records)
+  - [x] type : Transaction Type not supported: NON BLOCKING : say None & continue with the file
+  - [x] client : missing: NON BLOCKING : say None & continue with the file
+  - [x] tx : missing: NON BLOCKING : say None & continue with the file
+  - [x] amount : missing: NON BLOCKING : say None & continue with the file (check later semantically if deposit or withdrawal)
 
 - [ ] Improve CSV Perf : See [here](https://docs.rs/csv/1.1.6/csv/tutorial/index.html#amortizing-allocations)
   - [ ] Handle non-text format ? Looks complicated ....https://github.com/keirlawson/binaryornot/blob/master/src/lib.rs

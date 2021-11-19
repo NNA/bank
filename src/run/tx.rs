@@ -16,8 +16,8 @@ pub struct TransactionLine {
     #[serde(deserialize_with = "csv::invalid_option")]
     pub kind: Option<TransactionKind>,
     #[serde(rename = "client")]
-    pub client_id: u16,
+    pub client_id: Option<u16>,
     #[serde(rename = "tx")]
-    pub tx_id: u32,
-    pub amount: String,
+    pub tx_id: Option<u32>,
+    pub amount: Option<String>,
 }
