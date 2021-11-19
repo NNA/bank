@@ -1,8 +1,8 @@
 # TODO
 
 ## Reading CSV
-- [ ] Input parameter
-  - [ ] handle parameter missing
+- [x] Input parameter
+  - [x] handle parameter missing
 - [ ] Read file in streaming but treat sequentially, buffer like
   - [ ] Handle file not found
   - [ ] Handle non-text format ?

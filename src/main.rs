@@ -1,22 +1,20 @@
 use std::env;
+use std::process;
+
+use bank::run;
+use bank::Config;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let _config = Config::new(&args);
-}
 
-struct Config<'a> {
-    transaction_file: &'a str,
-}
+    let config = Config::new(&args).unwrap_or_else(|err| {
+        println!("Problem parsing arguments: {}", err);
+        process::exit(1);
+    });
 
-impl Config<'_> {
-    fn new(args: &[String]) -> Config {
-        if args.len() < 2 {
-            panic!("not enough arguments");
-        }
+    if let Err(e) = run(config) {
+        println!("Application error: {}", e);
 
-        Config {
-            transaction_file: &args[1],
-        }
+        process::exit(1);
     }
 }
