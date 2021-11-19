@@ -3,12 +3,15 @@
 ## Reading CSV
 - [x] Input parameter
   - [x] handle parameter missing
-- [ ] Read file in streaming but treat sequentially, buffer like
+- [ ] Read file synchronously using buffer
   - [ ] Handle file not found
+  - [ ] Skip first line
   - [ ] Handle non-text format ?
-- [ ] Skip first line
 - [ ] Parse a line
   - [ ] Handle parsing error (type not supported, not enough columns) : skip the line
+
+- [ ] Avoid creating new Vec on each line (aka: Reuse same buffer) see https://stackoverflow.com/questions/45882329/read-large-files-line-by-line-in-rust
+- [ ] Read file async streaming like (but treat sequentially): https://tokio.rs/tokio/tutorial/io
 
 
 ## Models
