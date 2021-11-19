@@ -1,8 +1,8 @@
+use bank::run::config::Config;
+use bank::run::run;
+
 use std::env;
 use std::process;
-
-use bank::run;
-use bank::Config;
 
 fn main() {
     let args: Vec<String> = env::args().collect();

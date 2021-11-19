@@ -14,14 +14,14 @@ fn not_enough_arguments() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-// #[test]
-// fn file_doesnt_exist() -> Result<(), Box<dyn std::error::Error>> {
-//     let mut cmd = Command::cargo_bin("bank")?;
+#[test]
+fn file_doesnt_exist() -> Result<(), Box<dyn std::error::Error>> {
+    let mut cmd = Command::cargo_bin("bank")?;
 
-//     cmd.arg("test/file/doesnt/exist");
-//     cmd.assert()
-//         .failure()
-//         .stderr(predicate::str::contains("No such file or directory"));
+    cmd.arg("test/file/doesnt/exist");
+    cmd.assert()
+        .failure()
+        .stderr(predicate::str::contains("No such file or directory"));
 
-//     Ok(())
-// }
+    Ok(())
+}
