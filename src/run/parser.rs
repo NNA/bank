@@ -48,8 +48,8 @@ mod tests {
             txs[0],
             RawTransaction {
                 kind: Some(Deposit),
-                client_id: Some(1),
-                tx_id: Some(1),
+                client: Some(1),
+                tx: Some(1),
                 amount: Some("1.0".to_string()),
             }
         );
@@ -58,8 +58,8 @@ mod tests {
             txs[1],
             RawTransaction {
                 kind: Some(Deposit),
-                client_id: Some(2),
-                tx_id: Some(2),
+                client: Some(2),
+                tx: Some(2),
                 amount: Some("2.0".to_string()),
             }
         );
@@ -68,8 +68,8 @@ mod tests {
             txs[2],
             RawTransaction {
                 kind: Some(Deposit),
-                client_id: Some(1),
-                tx_id: Some(3),
+                client: Some(1),
+                tx: Some(3),
                 amount: Some("2.0".to_string()),
             }
         );
@@ -78,8 +78,8 @@ mod tests {
             txs[3],
             RawTransaction {
                 kind: Some(Withdrawal),
-                client_id: Some(1),
-                tx_id: Some(4),
+                client: Some(1),
+                tx: Some(4),
                 amount: Some("1.5".to_string()),
             }
         );
@@ -88,8 +88,8 @@ mod tests {
             txs[4],
             RawTransaction {
                 kind: Some(Withdrawal),
-                client_id: Some(2),
-                tx_id: Some(5),
+                client: Some(2),
+                tx: Some(5),
                 amount: Some("3.0".to_string()),
             }
         );
@@ -108,8 +108,8 @@ mod tests {
             txs[0],
             RawTransaction {
                 kind: None,
-                client_id: Some(1),
-                tx_id: Some(1),
+                client: Some(1),
+                tx: Some(1),
                 amount: Some("1.0".to_string()),
             }
         );
@@ -118,8 +118,8 @@ mod tests {
             txs[1],
             RawTransaction {
                 kind: Some(Deposit),
-                client_id: Some(2),
-                tx_id: Some(2),
+                client: Some(2),
+                tx: Some(2),
                 amount: Some("2.0".to_string()),
             }
         );
@@ -138,8 +138,8 @@ mod tests {
             txs[0],
             RawTransaction {
                 kind: Some(Deposit),
-                client_id: None,
-                tx_id: Some(1),
+                client: None,
+                tx: Some(1),
                 amount: Some("1.0".to_string()),
             }
         );
@@ -148,8 +148,8 @@ mod tests {
             txs[1],
             RawTransaction {
                 kind: Some(Deposit),
-                client_id: Some(2),
-                tx_id: Some(2),
+                client: Some(2),
+                tx: Some(2),
                 amount: Some("2.0".to_string()),
             }
         );
@@ -168,8 +168,8 @@ mod tests {
             txs[0],
             RawTransaction {
                 kind: Some(Deposit),
-                client_id: Some(1),
-                tx_id: None,
+                client: Some(1),
+                tx: None,
                 amount: Some("1.0".to_string()),
             }
         );
@@ -178,8 +178,8 @@ mod tests {
             txs[1],
             RawTransaction {
                 kind: Some(Deposit),
-                client_id: Some(2),
-                tx_id: Some(2),
+                client: Some(2),
+                tx: Some(2),
                 amount: Some("2.0".to_string()),
             }
         );
@@ -198,8 +198,8 @@ mod tests {
             txs[0],
             RawTransaction {
                 kind: Some(Deposit),
-                client_id: Some(1),
-                tx_id: Some(1),
+                client: Some(1),
+                tx: Some(1),
                 amount: None,
             }
         );
@@ -208,8 +208,8 @@ mod tests {
             txs[1],
             RawTransaction {
                 kind: Some(Deposit),
-                client_id: Some(2),
-                tx_id: Some(2),
+                client: Some(2),
+                tx: Some(2),
                 amount: Some("2.0".to_string()),
             }
         );

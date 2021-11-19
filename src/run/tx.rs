@@ -15,10 +15,8 @@ pub struct RawTransaction {
     #[serde(rename = "type")]
     #[serde(deserialize_with = "csv::invalid_option")]
     pub kind: Option<TransactionKind>,
-    #[serde(rename = "client")]
-    pub client_id: Option<u16>,
-    #[serde(rename = "tx")]
-    pub tx_id: Option<u32>,
+    pub client: Option<u16>,
+    pub tx: Option<u32>,
     pub amount: Option<String>,
 }
 
