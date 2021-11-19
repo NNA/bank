@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, PartialEq)]
 #[serde(rename_all = "lowercase")]
 pub enum TransactionKind {
     Deposit,
@@ -10,13 +10,13 @@ pub enum TransactionKind {
     Chargeback,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, PartialEq)]
 pub struct TransactionLine {
     #[serde(rename = "type")]
-    kind: TransactionKind,
+    pub kind: TransactionKind,
     #[serde(rename = "client")]
-    client_id: u16,
+    pub client_id: u16,
     #[serde(rename = "tx")]
-    tx_id: u32,
-    amount: String,
+    pub tx_id: u32,
+    pub amount: String,
 }

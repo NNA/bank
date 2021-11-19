@@ -27,3 +27,68 @@ pub fn parse_transactions_file(
 
     Ok(vec)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::run::tx::TransactionKind::*;
+    use crate::run::tx::TransactionLine;
+
+    #[test]
+    fn parser_works_if_given_a_correct_file() {
+        let ok_res: Vec<TransactionLine> =
+            parse_transactions_file(&"tests/fixtures/regular_tx.csv").unwrap();
+
+        assert_eq!(ok_res.len(), 5);
+
+        assert_eq!(
+            ok_res[0],
+            TransactionLine {
+                kind: Deposit,
+                client_id: 1,
+                tx_id: 1,
+                amount: "1.0".to_string(),
+            }
+        );
+
+        assert_eq!(
+            ok_res[1],
+            TransactionLine {
+                kind: Deposit,
+                client_id: 2,
+                tx_id: 2,
+                amount: "2.0".to_string(),
+            }
+        );
+
+        assert_eq!(
+            ok_res[2],
+            TransactionLine {
+                kind: Deposit,
+                client_id: 1,
+                tx_id: 3,
+                amount: "2.0".to_string(),
+            }
+        );
+
+        assert_eq!(
+            ok_res[3],
+            TransactionLine {
+                kind: Withdrawal,
+                client_id: 1,
+                tx_id: 4,
+                amount: "1.5".to_string(),
+            }
+        );
+
+        assert_eq!(
+            ok_res[4],
+            TransactionLine {
+                kind: Withdrawal,
+                client_id: 2,
+                tx_id: 5,
+                amount: "3.0".to_string(),
+            }
+        );
+    }
+}
