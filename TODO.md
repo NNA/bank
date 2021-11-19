@@ -22,20 +22,26 @@
 - [ ] Read file async streaming like (but treat sequentially): https://tokio.rs/tokio/tutorial/io
 
 
-## Models
-- [ ] Clients = Accounts
+## Models / Structs
 - [x] TransactionKind : an Enum
 - [x] RawTransaction : to hold raw data just parsed by CSV operator
 - [x] RawTransactionsList : abstract vec to hold all raw transactions parsed
-- [ ] Structs for every transaction : Deposit, Withdrawal, Dispute, Resolve, Chargeback
-- [ ] TransactionStatus ? : Prepared, Applied
-- [ ] Transaction ? : client, kind, amount, status 
-- [ ] GlobalBalance : (aka the state) a HashSet of accounts (client, amount, status)
+- [x] Structs for every transaction :
+  - [x] Deposit
+  - [ ] Withdrawal
+  - [ ] Dispute
+  - [ ] Resolve
+  - [ ] Chargeback
+- [x] AccountBalance : lock, available, held 
+- [x] BalanceBook : (aka the state) a HashSet of accounts (client, amount, status)
+- [ ] Implement TryFrom<RawTransaction> for all
+- [ ] Handle amount convertion to Decimal in a trait ? Amountable ?
 
-## Applying trasactions
+## Process / Applying trasactions
 - [ ] Deposit
-    - [ ] Client does not exist
-    - [ ] Amount is not a number
+    - [ ] Increase available amount
+    - [ ] Edge case : Account does not exist / create it
+    - [ ] Edge case : Amount is not a number
 - [ ] Withdrawal
     - [ ] Not enough funds (Skip)
 - [ ] Dispute
