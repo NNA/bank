@@ -8,7 +8,7 @@ pub struct Config<'a> {
 impl Config<'_> {
     pub fn new(args: &[String]) -> Result<Config, &str> {
         if args.len() < 2 {
-            panic!("not enough arguments");
+            return Err("not enough arguments");
         }
 
         Ok(Config { tx_file: &args[1] })
