@@ -24,10 +24,13 @@
 
 ## Models
 - [ ] Clients = Accounts
-- [ ] TransactionKinds : an Enum
-- [ ] TransactionStatus : Prepared, Applied
-- [ ] Transaction : client, kind, amount, status 
-- [ ] Ledger : (aka the state) a HashSet of accounts (client, amount, status)
+- [x] TransactionKind : an Enum
+- [x] RawTransaction : to hold raw data just parsed by CSV operator
+- [x] RawTransactionsList : abstract vec to hold all raw transactions parsed
+- [ ] Structs for every transaction : Deposit, Withdrawal, Dispute, Resolve, Chargeback
+- [ ] TransactionStatus ? : Prepared, Applied
+- [ ] Transaction ? : client, kind, amount, status 
+- [ ] GlobalBalance : (aka the state) a HashSet of accounts (client, amount, status)
 
 ## Applying trasactions
 - [ ] Deposit
