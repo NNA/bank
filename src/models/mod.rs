@@ -4,4 +4,4 @@ pub mod raw_tx;
 pub mod tx;
 
 type AccountId = u16;
-type Decimal = u64;
+pub type Decimal = u64;
