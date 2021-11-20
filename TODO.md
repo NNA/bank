@@ -44,9 +44,9 @@
 - [x] Handle amount convertion to Decimal (using dedicated crate))
 
 ## Process / Applying trasactions
-- [ ] Deposit
+- [x] Deposit
     - [x] Increase available amount
-    - [ ] Edge case : Above max amount (Skip)
+    - [x] Edge case : Above max amount (Skip)
 - [ ] Withdrawal
     - [ ] Decrease available amount
     - [ ] Edge case : not enough funds (Skip)
@@ -55,6 +55,7 @@
 - [ ] Chargeback
 
 ## Generate output
+- [ ] Compute Total amount dynamically
 - [ ] Write file
 
 ## Misc:
