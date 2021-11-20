@@ -34,12 +34,14 @@
     - [x] Edge case : Amount is not a number
     - [ ] Edge case : Amount is negative
   - [x] Withdrawal
+    - [x] Implement TryFrom<RawTransaction>
     - [x] Edge case : Missing required value
     - [x] Edge case : Account does not exist / create it
     - [x] Edge case : Amount is not a number
     - [ ] Edge case : Amount is negative
   - [ ] Dispute
-    - [ ] Edge case : Amount is negative
+    - [x] Implement TryFrom<RawTransaction>
+    - [x] Edge case : Missing required value
   - [ ] Resolve
     - [ ] Edge case : Amount is negative
   - [ ] Chargeback
