@@ -28,27 +28,28 @@
 - [x] RawTransactionsList : abstract vec to hold all raw transactions parsed
 - [x] Structs for every transaction :
   - [x] Deposit
+    - [x] Implement TryFrom<RawTransaction>
+    - [x] Edge case : Missing required value
+    - [x] Edge case : Account does not exist / create it
+    - [x] Edge case : Amount is not a number
   - [x] Withdrawal
+    - [x] Edge case : Missing required value
+    - [x] Edge case : Account does not exist / create it
+    - [x] Edge case : Amount is not a number
   - [ ] Dispute
   - [ ] Resolve
   - [ ] Chargeback
 - [x] AccountBalance : lock, available, held 
 - [x] BalanceBook : (aka the state) a HashSet of accounts (client, amount, status)
 - [x] Handle amount convertion to Decimal (using dedicated crate))
-- [ ] Implement TryFrom<RawTransaction> for all
 
 ## Process / Applying trasactions
 - [ ] Deposit
     - [x] Increase available amount
-    - [x] Edge case : Missing required value
-    - [x] Edge case : Account does not exist / create it
-    - [x] Edge case : Amount is not a number
+    - [ ] Edge case : Above max amount (Skip)
 - [ ] Withdrawal
     - [ ] Decrease available amount
-    - [x] Edge case : Missing required value
-    - [x] Edge case : Account does not exist / create it
-    - [x] Edge case : Amount is not a number
-    - [ ] Not enough funds (Skip)
+    - [ ] Edge case : not enough funds (Skip)
 - [ ] Dispute
 - [ ] Resolve
 - [ ] Chargeback
