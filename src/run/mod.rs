@@ -1,6 +1,7 @@
 pub mod computer;
 pub mod config;
 pub mod parser;
+pub mod writer;
 
 use crate::models::ledger::Ledger;
 use crate::models::raw_tx::RawTransactionsList;
@@ -13,6 +14,8 @@ pub fn run(config: config::Config) -> Result<(), Box<dyn Error>> {
 
     let ledger: Ledger = computer::compute_ledger(result);
     info!("after compute_ledger ledger is {:?}", ledger);
+
+    writer::write_balances(ledger.balances)?;
 
     Ok(())
 }

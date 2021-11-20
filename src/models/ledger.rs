@@ -2,6 +2,7 @@ use crate::models::account_balance::AccountBalance;
 use crate::models::tx::deposit::Deposit;
 use crate::models::tx::dispute::Dispute;
 use crate::models::tx::withdrawal::Withdrawal;
+
 // use crate::models::tx::RememberableTransaction;
 
 use crate::models::tx::TxId;
@@ -10,7 +11,7 @@ use std::collections::HashMap;
 
 #[derive(Debug)]
 pub struct Ledger {
-    balances: AccountIndex,
+    pub balances: AccountIndex,
     // transactions: TxIndex,
     deposits: HashMap<TxId, Deposit>,
     withdrawals: HashMap<TxId, Withdrawal>,
