@@ -1,33 +1,30 @@
-use crate::models::account_balance::AccountBalance;
-use crate::models::balance_book::BalanceBook;
-use crate::models::balance_book::BalanceBookType;
+use crate::models::ledger::Ledger;
 use crate::models::raw_tx::RawTransaction;
 use crate::models::raw_tx::RawTransactionsList;
 use crate::models::raw_tx::TransactionKind;
 use crate::models::tx::deposit::Deposit;
 use crate::models::tx::withdrawal::Withdrawal;
 use log::warn;
-use std::error::Error;
 
-// use crate::models::balance_book::Depositable;
+// use crate::models::ledger::Depositable;
 
 // use crate::models::Decimal;
 
-pub fn compute_balance(txs: RawTransactionsList) -> BalanceBook {
-    let mut b_book: BalanceBook = BalanceBook::new();
+pub fn compute_ledger(txs: RawTransactionsList) -> Ledger {
+    let mut ledger: Ledger = Ledger::new();
     for tx in txs {
         // let boxed_tx: Box<_>;
         match tx.kind {
             Some(ref kind) => match kind {
                 TransactionKind::Deposit => match Deposit::try_from(tx) {
-                    Ok(deposit) => match b_book.make_deposit(deposit) {
+                    Ok(deposit) => match ledger.make_deposit(deposit) {
                         Ok(_) => (),
                         Err(s) => warn!("{}", s),
                     },
                     Err(e) => warn!("Invalid deposit : {:?}", e),
                 },
                 TransactionKind::Withdrawal => match Withdrawal::try_from(tx) {
-                    Ok(withdrawal) => match b_book.make_withdrawal(withdrawal) {
+                    Ok(withdrawal) => match ledger.make_withdrawal(withdrawal) {
                         Ok(_) => (),
                         Err(s) => warn!("{}", s),
                     },
@@ -63,11 +60,12 @@ pub fn compute_balance(txs: RawTransactionsList) -> BalanceBook {
             ),
         }
     }
-    b_book
+
+    ledger
 }
 
 pub trait Accountable {
-    fn process_transaction(&self, book: &mut BalanceBook);
+    fn process_transaction(&self, ledger: &mut Ledger);
 }
 
 // impl Accountable for Deposit {
@@ -104,7 +102,7 @@ where
             .and_then(|t| Some(Transaction { subject: t }))
     }
 
-    pub fn update_book(&self, _book: &mut BalanceBook) {
+    pub fn update_ledger(&self, _ledger: &mut Ledger) {
         // if let Some(account) = b_book.get_mut(self.subject.account_id) {
         //     self.subject.process_transaction(deposit);
         // } else {

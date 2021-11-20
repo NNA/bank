@@ -1,5 +1,5 @@
 pub mod account_balance;
-pub mod balance_book;
+pub mod ledger;
 pub mod raw_tx;
 pub mod tx;
 
