@@ -1,5 +1,5 @@
 use crate::models::account_balance::AccountBalance;
-use crate::models::tx::Deposit;
+use crate::models::tx::deposit::Deposit;
 use crate::models::AccountId;
 use std::collections::HashMap;
 

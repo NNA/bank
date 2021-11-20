@@ -2,7 +2,6 @@ use crate::models::raw_tx::RawTransaction;
 use crate::models::AccountId;
 use rust_decimal::prelude::*;
 use rust_decimal::Decimal;
-// use crate::models::Decimal;
 
 type TxId = u32;
 
@@ -11,13 +10,6 @@ pub struct Deposit {
     pub id: TxId,
     pub account_id: AccountId,
     pub amount: Decimal,
-}
-
-#[derive(Debug)]
-pub struct Withdrawal {
-    id: TxId,
-    account_id: AccountId,
-    amount: Decimal,
 }
 
 impl TryFrom<RawTransaction> for Deposit {

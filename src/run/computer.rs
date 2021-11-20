@@ -4,7 +4,7 @@ use crate::models::balance_book::BalanceBookType;
 use crate::models::raw_tx::RawTransaction;
 use crate::models::raw_tx::RawTransactionsList;
 use crate::models::raw_tx::TransactionKind;
-use crate::models::tx::Deposit;
+use crate::models::tx::deposit::Deposit;
 use log::warn;
 use std::error::Error;
 

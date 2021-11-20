@@ -1,4 +1,4 @@
-use crate::models::tx::Deposit;
+use crate::models::tx::deposit::Deposit;
 use rust_decimal::Decimal;
 // use crate::models::Decimal;
 use log::error;
