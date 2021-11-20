@@ -1,9 +1,8 @@
 use crate::models::raw_tx::RawTransaction;
+use crate::models::tx::TxId;
 use crate::models::AccountId;
 use rust_decimal::prelude::*;
 use rust_decimal::Decimal;
-
-type TxId = u32;
 
 #[derive(Debug)]
 pub struct Deposit {
