@@ -32,13 +32,18 @@
     - [x] Edge case : Missing required value
     - [x] Edge case : Account does not exist / create it
     - [x] Edge case : Amount is not a number
+    - [ ] Edge case : Amount is negative
   - [x] Withdrawal
     - [x] Edge case : Missing required value
     - [x] Edge case : Account does not exist / create it
     - [x] Edge case : Amount is not a number
+    - [ ] Edge case : Amount is negative
   - [ ] Dispute
+    - [ ] Edge case : Amount is negative
   - [ ] Resolve
+    - [ ] Edge case : Amount is negative
   - [ ] Chargeback
+    - [ ] Edge case : Amount is negative
 - [x] AccountBalance : lock, available, held 
 - [x] BalanceBook : (aka the state) a HashSet of accounts (client, amount, status)
 - [x] Handle amount convertion to Decimal (using dedicated crate))
@@ -48,8 +53,8 @@
     - [x] Increase available amount
     - [x] Edge case : Above max amount (Skip)
 - [ ] Withdrawal
-    - [ ] Decrease available amount
-    - [ ] Edge case : not enough funds (Skip)
+    - [x] Decrease available amount
+    - [x] Edge case : not enough funds (< 0)(Skip)
 - [ ] Dispute
 - [ ] Resolve
 - [ ] Chargeback
@@ -58,8 +63,9 @@
 - [ ] Compute Total amount dynamically
 - [ ] Write file
 
-## Misc:
+## Misc / Polish :
 - [ ] Logs
+- [ ] Format (tab / spaces)
 - [ ] Help (-h on command line)
 - [ ] README
 
