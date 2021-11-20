@@ -68,4 +68,22 @@ mod tests {
         assert_eq!(deposit.account_id, 1);
         assert_eq!(deposit.amount, Decimal::new(232_000, 4));
     }
+
+    #[test]
+    fn deposit_fails_if_raw_transaction_has_no_tx() {
+        // Prepare data
+        let raw_tx = RawTransaction {
+            kind: Some(TransactionKind::Deposit),
+            client: Some(1),
+            tx: None,
+            amount: Some("23.2".to_string()),
+        };
+
+        let res = Deposit::try_from(raw_tx);
+        // assert!(res.is_err());
+        assert_eq!(
+            res.err().unwrap(),
+            "A Deposit must have a transaction id".to_string()
+        );
+    }
 }
