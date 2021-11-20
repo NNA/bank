@@ -5,6 +5,7 @@ use crate::models::raw_tx::RawTransaction;
 use crate::models::raw_tx::RawTransactionsList;
 use crate::models::raw_tx::TransactionKind;
 use crate::models::tx::deposit::Deposit;
+use crate::models::tx::withdrawal::Withdrawal;
 use log::warn;
 use std::error::Error;
 
@@ -19,13 +20,18 @@ pub fn compute_balance(txs: RawTransactionsList) -> BalanceBook {
         match tx.kind {
             Some(ref kind) => match kind {
                 TransactionKind::Deposit => match Deposit::try_from(tx) {
-                    Ok(deposit) => {
-                        // Works
-                        // let ba = b_book.find_or_create_account(deposit.account_id);
-                        // ba.process_deposit(deposit);
-                        b_book.make_deposit(deposit);
-                    }
+                    Ok(deposit) => match b_book.make_deposit(deposit) {
+                        Ok(_) => (),
+                        Err(s) => warn!("{}", s),
+                    },
                     Err(e) => warn!("Invalid deposit : {:?}", e),
+                },
+                TransactionKind::Withdrawal => match Withdrawal::try_from(tx) {
+                    Ok(withdrawal) => match b_book.make_withdrawal(withdrawal) {
+                        Ok(_) => (),
+                        Err(s) => warn!("{}", s),
+                    },
+                    Err(e) => warn!("Invalid withdrawal : {:?}", e),
                 },
 
                 // NEW - not working

@@ -1,7 +1,9 @@
 use crate::models::account_balance::AccountBalance;
 use crate::models::tx::deposit::Deposit;
+use crate::models::tx::withdrawal::Withdrawal;
 use crate::models::AccountId;
 use std::collections::HashMap;
+use std::error::Error;
 
 #[derive(Debug)]
 pub struct BalanceBook {
@@ -24,9 +26,14 @@ impl BalanceBook {
         }
     }
 
-    pub fn make_deposit(self: &mut BalanceBook, deposit: Deposit) {
+    pub fn make_deposit(self: &mut BalanceBook, deposit: Deposit) -> Result<(), String> {
         let account = self.find_or_create_account(deposit.account_id);
-        account.process_deposit(deposit);
+        account.process_deposit(deposit)
+    }
+
+    pub fn make_withdrawal(self: &mut BalanceBook, withdrawal: Withdrawal) -> Result<(), String> {
+        let account = self.find_or_create_account(withdrawal.account_id);
+        account.process_withdrawal(withdrawal)
     }
 }
 
