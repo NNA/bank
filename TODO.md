@@ -1,6 +1,7 @@
 # TODO
 
 ## Reading CSV
+
 - [x] Input parameter
   - [x] handle parameter missing
 - [x] Read file synchronously using buffer
@@ -23,6 +24,7 @@
 
 
 ## Models / Structs
+
 - [x] TransactionKind : an Enum
 - [x] RawTransaction : to hold raw data just parsed by CSV operator
 - [x] RawTransactionsList : abstract vec to hold all raw transactions parsed
@@ -51,19 +53,27 @@
 - [x] Handle amount convertion to Decimal (using dedicated crate))
 
 ## Process / Applying trasactions
+
 - [x] Deposit
-    - [x] Increase available amount
-    - [x] Edge case : Above max amount (Skip)
+  - [x] Increase available amount
+  - [x] Edge case : Above max amount (Skip)
 - [ ] Withdrawal
-    - [x] Decrease available amount
-    - [x] Edge case : not enough funds (< 0)(Skip)
+  - [x] Decrease available amount
+  - [x] Edge case : not enough funds (< 0)(Skip)
 - [ ] Dispute
+  - [ ] Increase held amount / Decrease available amount
+  - [ ] Edge case : Tx not found (< 0)(Skip)
+  - [ ] Edge case : not enough fund... no worry get negative
 - [ ] Resolve
 - [ ] Chargeback
 
+- [ ] BalanceBook
+  - [x] Find or create account
+  - [ ] Find tx
+  - [ ] Compute Total amount dynamically
+
 ## Generate output
-- [ ] Compute Total amount dynamically
-- [ ] Write file
+- [x] Write file
 
 ## Misc / Polish :
 - [ ] Logs
@@ -76,6 +86,7 @@
 - [ ] Document code
 - [ ] Apply Clippy
 - [ ] CI ?
+- [ ] Security : Avoid debug, public types 
 
 ## Problems / Edges cases
 - [ ] Precision problems? 
