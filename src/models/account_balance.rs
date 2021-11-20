@@ -1,4 +1,5 @@
 use crate::models::tx::deposit::Deposit;
+use crate::models::tx::withdrawal::Withdrawal;
 use rust_decimal::Decimal;
 // use crate::models::Decimal;
 use log::error;
@@ -20,7 +21,7 @@ impl AccountBalance {
     }
 
     pub fn process_deposit(&mut self, deposit: Deposit) -> Result<(), String> {
-        if let Some(total) = self.available.checked_add(deposit.amount as Decimal) {
+        if let Some(total) = self.available.checked_add(deposit.amount) {
             self.available = total;
             Ok(())
         } else {
@@ -33,16 +34,33 @@ impl AccountBalance {
         }
     }
 
-    // pub fn process_withrawal(&mut self, withdrawal: Withdrawal) {
-    //     if let Some(total) = self.available {
-    //         self.available = total;
-    //     } else {
-    //         error!(
-    //             "Could not make withdrawal, maximum amount of {} reached",
-    //             Decimal::MAX
-    //         );
-    //     }
-    // }
+    pub fn process_withdrawal(&mut self, withdrawal: Withdrawal) -> Result<(), String> {
+        match self.available.checked_sub(withdrawal.amount) {
+            Some(sub) => match sub.is_sign_positive() {
+                true => {
+                    self.available = sub;
+                    Ok(())
+                }
+                false => {
+                    let msg = format!(
+                        "Could not make withdrawal, not enough amount available (you asked for {} but only {} are available)",
+                        withdrawal.amount,
+                        self.available
+                    );
+                    error!("{}", msg);
+                    Err(msg)
+                }
+            },
+            None => {
+                let msg = format!(
+                    "Could not make withdrawal, minimum available amount of {} reached",
+                    Decimal::MIN
+                );
+                error!("{}", msg);
+                Err(msg)
+            }
+        }
+    }
 }
 
 impl Default for AccountBalance {
@@ -107,5 +125,104 @@ mod tests {
             )
         );
         assert_eq!(ab.available, just_under_limit);
+    }
+
+    // Process Withdrawal
+
+    #[test]
+    fn process_withdrawal_removes_amount_from_available() {
+        // Prepare data
+        let mut ab = AccountBalance::new();
+        ab.available = Decimal::new(200_000, 4);
+
+        let w = Withdrawal {
+            id: 1,
+            account_id: 2,
+            amount: Decimal::new(150_000, 4),
+        };
+
+        // Execute
+        let res = ab.process_withdrawal(w);
+
+        // Check
+        assert!(res.is_ok());
+        assert_eq!(ab.available, Decimal::new(50_000, 4));
+    }
+
+    #[test]
+    fn process_withdrawal_removes_amount_from_available_even_if_0_available_left_after_withdraw() {
+        // Prepare data
+        let mut ab = AccountBalance::new();
+        ab.available = Decimal::new(200_000, 4);
+
+        let w = Withdrawal {
+            id: 1,
+            account_id: 2,
+            amount: Decimal::new(200_000, 4),
+        };
+
+        // Execute
+        let res = ab.process_withdrawal(w);
+
+        // Check
+        assert!(res.is_ok());
+        assert_eq!(ab.available, Decimal::new(0, 4));
+    }
+
+    #[test]
+    fn process_withdrawal_returns_error_and_leaves_amount_unchanged_if_not_enough_available() {
+        // Prepare data
+        let mut ab = AccountBalance::new();
+        ab.available = Decimal::new(200_000, 4);
+
+        let w = Withdrawal {
+            id: 1,
+            account_id: 2,
+            amount: Decimal::new(400_000, 4),
+        };
+
+        // Execute
+        let res = ab.process_withdrawal(w);
+
+        // Check
+        assert!(res.is_err());
+        assert_eq!(
+            res.err().unwrap(),
+            format!(
+                "Could not make withdrawal, not enough amount available (you asked for {} but only {} are available)",
+                Decimal::new(400_000, 4),
+                Decimal::new(200_000, 4),
+            )
+        );
+        assert_eq!(ab.available, Decimal::new(200_000, 4));
+    }
+
+    #[test]
+    fn process_withdrawal_returns_error_if_min_amount_reached() {
+        // Prepare data
+        let mut ab = AccountBalance::new();
+        let just_above_limit = Decimal::MIN + Decimal::new(1_000, 4);
+        println!("just_above_limit {:?}", just_above_limit);
+        ab.available = just_above_limit;
+
+        let d = Withdrawal {
+            id: 1,
+            account_id: 2,
+            amount: Decimal::new(10_000, 4),
+        };
+
+        // Execute
+        let res = ab.process_withdrawal(d);
+
+        // Check
+        assert!(res.is_err());
+        assert_eq!(
+            res.err().unwrap(),
+            format!(
+                "Could not make withdrawal, minimum available amount of {} reached",
+                Decimal::MIN
+            )
+        );
+        assert_eq!(ab.available, just_above_limit);
     }
 }

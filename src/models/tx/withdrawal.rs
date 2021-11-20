@@ -6,9 +6,9 @@ use rust_decimal::Decimal;
 
 #[derive(Debug)]
 pub struct Withdrawal {
-    id: TxId,
-    account_id: AccountId,
-    amount: Decimal,
+    pub id: TxId,
+    pub account_id: AccountId,
+    pub amount: Decimal,
 }
 
 impl TryFrom<RawTransaction> for Withdrawal {
