@@ -4,7 +4,7 @@ use crate::models::AccountId;
 use rust_decimal::prelude::*;
 use rust_decimal::Decimal;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Deposit {
     pub id: TxId,
     pub account_id: AccountId,

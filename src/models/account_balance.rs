@@ -1,6 +1,9 @@
 use crate::models::tx::deposit::Deposit;
+use crate::models::tx::dispute::Dispute;
 use crate::models::tx::withdrawal::Withdrawal;
+
 use rust_decimal::Decimal;
+
 // use crate::models::Decimal;
 use log::error;
 
@@ -61,6 +64,10 @@ impl AccountBalance {
             }
         }
     }
+
+    pub fn process_dispute(&mut self, dispute: Dispute) -> Result<(), String> {
+        unimplemented!()
+    }
 }
 
 impl Default for AccountBalance {
@@ -77,6 +84,10 @@ impl Default for AccountBalance {
 mod tests {
     use super::*;
     use rust_decimal::Decimal;
+
+    /////////////////////
+    // Process Deposit
+    /////////////////////
 
     #[test]
     fn process_deposit_adds_amount_to_available() {
@@ -127,8 +138,9 @@ mod tests {
         assert_eq!(ab.available, just_under_limit);
     }
 
+    /////////////////////
     // Process Withdrawal
-
+    /////////////////////
     #[test]
     fn process_withdrawal_removes_amount_from_available() {
         // Prepare data
@@ -225,4 +237,27 @@ mod tests {
         );
         assert_eq!(ab.available, just_above_limit);
     }
+
+    /////////////////////
+    // Process Dispute
+    /////////////////////
+    // #[test]
+    // fn process_dispute_removes_amount_from_available_and_increases_held() {
+    //     // Prepare data
+    //     let mut ab = AccountBalance::new();
+    //     ab.available = Decimal::new(200_000, 4);
+
+    //     let w = Withdrawal {
+    //         id: 1,
+    //         account_id: 2,
+    //         amount: Decimal::new(150_000, 4),
+    //     };
+
+    //     // Execute
+    //     let res = ab.process_withdrawal(w);
+
+    //     // Check
+    //     assert!(res.is_ok());
+    //     assert_eq!(ab.available, Decimal::new(50_000, 4));
+    // }
 }
