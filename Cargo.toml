@@ -14,6 +14,8 @@ name = "bank"
 csv = "1.1"
 env_logger = "0.9"
 log = "0.4"
+rust_decimal = "1.17"
+rust_decimal_macros = "1.17"
 serde = { version = "1", features = ["derive"]}
 
 [dev-dependencies]

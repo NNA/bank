@@ -40,7 +40,7 @@
 ## Process / Applying trasactions
 - [ ] Deposit
     - [x] Increase available amount
-    - [ ] Edge case : Account does not exist / create it
+    - [x] Edge case : Account does not exist / create it
     - [ ] Edge case : Amount is not a number
 - [ ] Withdrawal
     - [ ] Not enough funds (Skip)

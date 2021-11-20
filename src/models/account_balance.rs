@@ -1,5 +1,6 @@
 use crate::models::tx::Deposit;
-use crate::models::Decimal;
+use rust_decimal::Decimal;
+// use crate::models::Decimal;
 use log::error;
 
 #[derive(Debug, PartialEq)]
@@ -32,8 +33,8 @@ impl Default for AccountBalance {
     fn default() -> Self {
         AccountBalance {
             locked: false,
-            available: 0,
-            held: 0,
+            available: Decimal::new(0, 0),
+            held: Decimal::new(0, 0),
         }
     }
 }

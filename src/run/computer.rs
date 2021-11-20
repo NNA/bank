@@ -10,7 +10,7 @@ use std::error::Error;
 
 // use crate::models::balance_book::Depositable;
 
-use crate::models::Decimal;
+// use crate::models::Decimal;
 
 pub fn compute_balance(txs: RawTransactionsList) -> BalanceBook {
     let mut b_book: BalanceBook = BalanceBook::new();

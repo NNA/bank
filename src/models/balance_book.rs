@@ -41,19 +41,20 @@ impl Default for BalanceBook {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rust_decimal::Decimal;
 
     #[test]
     fn balance_book_can_find_an_existing_account_given_its_account_id() {
         // Prepare data
         let mut bb = BalanceBook::new();
         let mut ac = AccountBalance::new();
-        ac.available = 10_000;
+        ac.available = Decimal::new(10_000, 4);
         bb.content.insert(1, ac);
 
         // TODO try impprove this
         // assert_eq!(bb.find_or_create_account(1), &ac); //not allowed
         let found = bb.find_or_create_account(1);
-        assert_eq!(found.available, 10_000);
+        assert_eq!(found.available, Decimal::new(10_000, 4));
     }
 
     #[test]
