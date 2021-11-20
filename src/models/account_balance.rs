@@ -2,7 +2,7 @@ use crate::models::tx::Deposit;
 use crate::models::Decimal;
 use log::error;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct AccountBalance {
     // total will be computed
     pub available: Decimal,
