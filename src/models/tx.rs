@@ -25,18 +25,18 @@ impl TryFrom<RawTransaction> for Deposit {
 
     fn try_from(raw_tx: RawTransaction) -> Result<Self, Self::Error> {
         if let None = raw_tx.client {
-            return Err("A Deposit must have a client".to_string());
+            return Err("missing client".to_string());
         }
         if let None = raw_tx.tx {
-            return Err("A Deposit must have a transaction id".to_string());
+            return Err("missing tx".to_string());
         }
         if let None = raw_tx.amount {
-            return Err("A Deposit must have an amount".to_string());
+            return Err("missing amount".to_string());
         }
-        let mut am: Decimal;
+        let am: Decimal;
         match Decimal::from_str(&raw_tx.amount.unwrap()) {
             Ok(a) => am = a,
-            Err(e) => return Err("Invalid amount".to_string()),
+            Err(_e) => return Err("invalid amount".to_string()),
         }
         Ok(Deposit {
             id: raw_tx.tx.unwrap(),
@@ -70,7 +70,7 @@ mod tests {
     }
 
     #[test]
-    fn deposit_fails_if_raw_transaction_has_no_tx() {
+    fn deposit_creation_fails_if_raw_transaction_has_no_tx() {
         // Prepare data
         let raw_tx = RawTransaction {
             kind: Some(TransactionKind::Deposit),
@@ -81,9 +81,51 @@ mod tests {
 
         let res = Deposit::try_from(raw_tx);
         // assert!(res.is_err());
-        assert_eq!(
-            res.err().unwrap(),
-            "A Deposit must have a transaction id".to_string()
-        );
+        assert_eq!(res.err().unwrap(), "missing tx".to_string());
+    }
+
+    #[test]
+    fn deposit_creation_fails_if_raw_transaction_has_no_client() {
+        // Prepare data
+        let raw_tx = RawTransaction {
+            kind: Some(TransactionKind::Deposit),
+            client: None,
+            tx: Some(42),
+            amount: Some("23.2".to_string()),
+        };
+
+        let res = Deposit::try_from(raw_tx);
+        // assert!(res.is_err());
+        assert_eq!(res.err().unwrap(), "missing client".to_string());
+    }
+
+    #[test]
+    fn deposit_creation_fails_if_raw_transaction_has_no_amount() {
+        // Prepare data
+        let raw_tx = RawTransaction {
+            kind: Some(TransactionKind::Deposit),
+            client: Some(1),
+            tx: Some(42),
+            amount: None,
+        };
+
+        let res = Deposit::try_from(raw_tx);
+        // assert!(res.is_err());
+        assert_eq!(res.err().unwrap(), "missing amount".to_string());
+    }
+
+    #[test]
+    fn deposit_creation_fails_if_amount_unparsable() {
+        // Prepare data
+        let raw_tx = RawTransaction {
+            kind: Some(TransactionKind::Deposit),
+            client: Some(1),
+            tx: Some(42),
+            amount: Some("not_a_number".to_string()),
+        };
+
+        let res = Deposit::try_from(raw_tx);
+        // assert!(res.is_err());
+        assert_eq!(res.err().unwrap(), "invalid amount".to_string());
     }
 }
