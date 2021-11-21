@@ -1,7 +1,8 @@
 use crate::models::account_balance::AccountBalance;
 use crate::models::tx::deposit::Deposit;
-use crate::models::tx::dispute::Dispute;
+use crate::models::tx::dispute::{Dispute, DisputeStatus};
 use crate::models::tx::withdrawal::Withdrawal;
+use rust_decimal::Decimal;
 
 // use crate::models::tx::RememberableTransaction;
 
@@ -102,30 +103,40 @@ impl Ledger {
     }
 
     // TODO: test
-    pub fn complete_dispute(self: &mut Ledger, mut dispute: Dispute) -> Result<(), String> {
+    pub fn find_and_update_tx_with_dispute_status_and_return_disputed_amount(
+        self: &mut Ledger,
+        dispute: Dispute,
+    ) -> Result<Decimal, String> {
         // let account = self.find_or_create_account(dispute.account_id);
         if let Some(deposit) = self.find_tx_in_deposits(dispute.disputed_tx_id) {
             if deposit.account_id != dispute.account_id {
                 return Err("The disputed tx client is not the dispute client".to_string());
             } else {
-                dispute.disputed_amount = Some(deposit.amount);
+                deposit.dispute_status = DisputeStatus::Disputed;
+                Ok(deposit.amount)
             }
         } else {
             if let Some(withdrawal) = self.find_tx_in_withdrawals(dispute.disputed_tx_id) {
                 if withdrawal.account_id != dispute.account_id {
                     return Err("The disputed tx client is not the dispute client".to_string());
                 } else {
-                    dispute.disputed_amount = Some(withdrawal.amount);
+                    withdrawal.dispute_status = DisputeStatus::Disputed;
+                    Ok(withdrawal.amount)
                 }
+            } else {
+                Err("The disputed tx was not found".to_string())
             }
         }
-        Ok(())
     }
 
     // TODO: test
-    pub fn make_dispute(self: &mut Ledger, complete_dispute: Dispute) -> Result<(), String> {
-        let account = self.find_or_create_account(complete_dispute.account_id);
-        account.process_dispute(complete_dispute)
+    pub fn make_dispute(self: &mut Ledger, _dispute: Dispute) -> Result<(), String> {
+        // WIP
+        // let account = self.find_or_create_account(dispute.account_id);
+        // let disputed_amount =
+        //     self.find_and_update_tx_with_dispute_status_and_return_disputed_amount(dispute)?;
+        // account.dispute(disputed_amount)
+        Ok(())
     }
 }
 
@@ -177,6 +188,7 @@ mod tests {
             id: 1,
             account_id: 3324,
             amount: Decimal::new(10_000, 4),
+            dispute_status: DisputeStatus::NotDisputed,
         };
         ledger.deposits.insert(1, deposit);
 
@@ -194,6 +206,7 @@ mod tests {
             id: 1,
             account_id: 3321,
             amount: Decimal::new(10_000, 4),
+            dispute_status: DisputeStatus::NotDisputed,
         };
         ledger.withdrawals.insert(1, withdrawal);
 

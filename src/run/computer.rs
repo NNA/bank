@@ -3,6 +3,7 @@ use crate::models::raw_tx::RawTransaction;
 use crate::models::raw_tx::RawTransactionsList;
 use crate::models::raw_tx::TransactionKind;
 use crate::models::tx::deposit::Deposit;
+use crate::models::tx::dispute::Dispute;
 use crate::models::tx::withdrawal::Withdrawal;
 use log::warn;
 
@@ -25,6 +26,13 @@ pub fn compute_ledger(txs: RawTransactionsList) -> Ledger {
                 },
                 TransactionKind::Withdrawal => match Withdrawal::try_from(tx) {
                     Ok(withdrawal) => match ledger.make_withdrawal(withdrawal) {
+                        Ok(_) => (),
+                        Err(s) => warn!("{}", s),
+                    },
+                    Err(e) => warn!("Invalid withdrawal : {:?}", e),
+                },
+                TransactionKind::Dispute => match Dispute::try_from(tx) {
+                    Ok(dispute) => match ledger.make_dispute(dispute) {
                         Ok(_) => (),
                         Err(s) => warn!("{}", s),
                     },

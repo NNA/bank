@@ -1,13 +1,19 @@
 use crate::models::raw_tx::RawTransaction;
 use crate::models::tx::TxId;
 use crate::models::AccountId;
-use rust_decimal::Decimal;
+
+#[derive(Debug, PartialEq)]
+pub enum DisputeStatus {
+    NotDisputed,
+    Disputed,
+    Resolved,
+    Chargedback,
+}
 
 #[derive(Debug)]
 pub struct Dispute {
     pub account_id: AccountId,
     pub disputed_tx_id: TxId,
-    pub disputed_amount: Option<Decimal>,
 }
 
 impl TryFrom<RawTransaction> for Dispute {
@@ -23,7 +29,6 @@ impl TryFrom<RawTransaction> for Dispute {
         Ok(Dispute {
             account_id: raw_tx.client.unwrap(),
             disputed_tx_id: raw_tx.tx.unwrap(),
-            disputed_amount: None,
         })
     }
 }

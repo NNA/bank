@@ -1,4 +1,5 @@
 use crate::models::raw_tx::RawTransaction;
+use crate::models::tx::dispute::DisputeStatus;
 use crate::models::tx::TxId;
 use crate::models::AccountId;
 use rust_decimal::prelude::*;
@@ -9,6 +10,7 @@ pub struct Deposit {
     pub id: TxId,
     pub account_id: AccountId,
     pub amount: Decimal,
+    pub dispute_status: DisputeStatus,
 }
 
 impl TryFrom<RawTransaction> for Deposit {
@@ -33,6 +35,7 @@ impl TryFrom<RawTransaction> for Deposit {
             id: raw_tx.tx.unwrap(),
             account_id: raw_tx.client.unwrap(),
             amount: am,
+            dispute_status: DisputeStatus::NotDisputed,
         })
     }
 }
