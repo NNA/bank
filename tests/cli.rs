@@ -9,12 +9,11 @@ fn cli_runs_and_output_to_stdout() -> Result<(), Box<dyn std::error::Error>> {
     cmd.arg("./tests/fixtures/regular_tx.csv")
         .assert()
         .success()
-        .stdout(
-            r#"client,available,held,total,locked
-2,2.0,0,balance.total,false
-1,1.5,0,balance.total,false
-"#,
-        );
+        .stdout(predicates::str::starts_with(
+            "client,available,held,total,locked",
+        ))
+        .stdout(predicates::str::contains("1,1.5,0,1.5,false"))
+        .stdout(predicates::str::contains("2,2.0,0,2.0,false"));
 
     Ok(())
 }
