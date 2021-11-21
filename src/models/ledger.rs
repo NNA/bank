@@ -183,8 +183,23 @@ mod tests {
         // TODO try impprove this
         let found = ledger.find_tx_in_deposits(1).unwrap();
         assert_eq!(found.account_id, 3324);
-        // assert_eq!(*found, deposit.account_id);
-        // assert_eq!(*found, RememberableTransaction::Deposit(deposit));
+        assert!(ledger.find_tx_in_deposits(2).is_none());
+    }
+
+    #[test]
+    fn find_an_existing_withdrawal_given_its_tx_id() {
+        // Prepare data
+        let mut ledger = Ledger::new();
+        let withdrawal = Withdrawal {
+            id: 1,
+            account_id: 3321,
+            amount: Decimal::new(10_000, 4),
+        };
+        ledger.withdrawals.insert(1, withdrawal);
+
+        let found = ledger.find_tx_in_withdrawals(1).unwrap();
+        assert_eq!(found.account_id, 3321);
+        assert!(ledger.find_tx_in_withdrawals(2).is_none());
     }
 }
 
