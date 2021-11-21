@@ -24,7 +24,10 @@ impl AccountBalance {
 
     /// Total is computed because always equal to available + held
     pub fn total(&self) -> Decimal {
-        self.available + self.held
+        match self.available.checked_add(self.held) {
+            Some(total) => total,
+            None => self.available,
+        }
     }
 
     pub fn process_deposit(&mut self, deposit: Deposit) -> Result<(), String> {
@@ -264,4 +267,28 @@ mod tests {
     //     assert!(res.is_ok());
     //     assert_eq!(ab.available, Decimal::new(50_000, 4));
     // }
+
+    #[test]
+    fn total_makes_sum_available_and_held() {
+        // Prepare data
+        let ab = AccountBalance {
+            available: Decimal::new(1_000, 4),
+            held: Decimal::new(1_500, 4),
+            locked: false,
+        };
+        assert_eq!(ab.total(), Decimal::new(2_500, 4));
+    }
+
+    #[test]
+    fn total_makes_returns_available_if_overflow() {
+        // Prepare data
+        let ab = AccountBalance {
+            available: Decimal::MAX,
+            held: Decimal::new(15_500, 4),
+            locked: false,
+        };
+
+        // Check
+        assert_eq!(ab.total(), Decimal::MAX);
+    }
 }
