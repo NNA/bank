@@ -1,5 +1,6 @@
 use crate::models::tx::deposit::Deposit;
-use crate::models::tx::dispute::Dispute;
+use crate::models::tx::dispute::DisputeStatus;
+
 use crate::models::tx::withdrawal::Withdrawal;
 
 use rust_decimal::Decimal;
@@ -72,8 +73,36 @@ impl AccountBalance {
         }
     }
 
-    pub fn process_dispute(&mut self, dispute: Dispute) -> Result<(), String> {
-        unimplemented!()
+    pub fn dispute(&mut self, disputed_amount: Decimal) -> Result<(), String> {
+        match self.available.checked_sub(disputed_amount) {
+            Some(available) => {
+                self.available = available;
+                match self.held.checked_add(disputed_amount) {
+                    Some(held) => {
+                        self.held = held;
+                        // We did both held & available
+                        return Ok(());
+                    }
+                    None => {
+                        // TODO compensate : Here we are in a bad situation available removed but held not increased
+                        let msg = format!(
+                            "Could not make dispute, maximum available amount of {} reached for held",
+                            Decimal::MIN
+                        );
+                        error!("{}", msg);
+                        Err(msg)
+                    }
+                }
+            }
+            None => {
+                let msg = format!(
+                    "Could not make dispute, minimum available amount of {} reached for available",
+                    Decimal::MIN
+                );
+                error!("{}", msg);
+                Err(msg)
+            }
+        }
     }
 }
 
@@ -106,6 +135,7 @@ mod tests {
             id: 1,
             account_id: 2,
             amount: Decimal::new(5_000, 4),
+            dispute_status: DisputeStatus::NotDisputed,
         };
 
         // Execute
@@ -128,6 +158,7 @@ mod tests {
             id: 1,
             account_id: 2,
             amount: Decimal::new(10_000, 4),
+            dispute_status: DisputeStatus::NotDisputed,
         };
 
         // Execute
@@ -158,6 +189,7 @@ mod tests {
             id: 1,
             account_id: 2,
             amount: Decimal::new(150_000, 4),
+            dispute_status: DisputeStatus::NotDisputed,
         };
 
         // Execute
@@ -178,6 +210,7 @@ mod tests {
             id: 1,
             account_id: 2,
             amount: Decimal::new(200_000, 4),
+            dispute_status: DisputeStatus::NotDisputed,
         };
 
         // Execute
@@ -198,6 +231,7 @@ mod tests {
             id: 1,
             account_id: 2,
             amount: Decimal::new(400_000, 4),
+            dispute_status: DisputeStatus::NotDisputed,
         };
 
         // Execute
@@ -228,6 +262,7 @@ mod tests {
             id: 1,
             account_id: 2,
             amount: Decimal::new(10_000, 4),
+            dispute_status: DisputeStatus::NotDisputed,
         };
 
         // Execute
@@ -248,25 +283,22 @@ mod tests {
     /////////////////////
     // Process Dispute
     /////////////////////
-    // #[test]
-    // fn process_dispute_removes_disputed_amount_from_available_and_increases_held() {
-    //     // Prepare data
-    //     let mut ab = AccountBalance::new();
-    //     ab.available = Decimal::new(200_000, 4);
+    #[test]
+    fn process_dispute_removes_disputed_amount_from_available_and_increases_held() {
+        // Prepare data
+        let mut ab = AccountBalance::new();
+        ab.available = Decimal::new(200_000, 4);
 
-    //     let w = Withdrawal {
-    //         id: 1,
-    //         account_id: 2,
-    //         amount: Decimal::new(150_000, 4),
-    //     };
+        // Execute
+        let res = ab.dispute(Decimal::new(150_000, 4));
 
-    //     // Execute
-    //     let res = ab.process_withdrawal(w);
-
-    //     // Check
-    //     assert!(res.is_ok());
-    //     assert_eq!(ab.available, Decimal::new(50_000, 4));
-    // }
+        // Check
+        let total_before_dispute = ab.total();
+        assert!(res.is_ok());
+        assert_eq!(ab.available, Decimal::new(50_000, 4));
+        assert_eq!(ab.held, Decimal::new(150_000, 4));
+        assert_eq!(ab.total(), total_before_dispute);
+    }
 
     /////////////////////
     // total
