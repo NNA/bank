@@ -22,7 +22,7 @@ impl AccountBalance {
         }
     }
 
-    /// Total is computed because always equal to available + held
+    /// Total is computed because always equals to available + held
     pub fn total(&self) -> Decimal {
         match self.available.checked_add(self.held) {
             Some(total) => total,
@@ -30,10 +30,10 @@ impl AccountBalance {
         }
     }
 
-    pub fn process_deposit(&mut self, deposit: Deposit) -> Result<(), String> {
+    pub fn process_deposit(&mut self, deposit: Deposit) -> Result<Deposit, String> {
         if let Some(total) = self.available.checked_add(deposit.amount) {
             self.available = total;
-            Ok(())
+            Ok(deposit)
         } else {
             let msg = format!(
                 "Could not make deposit, maximum available amount of {} reached",
@@ -44,12 +44,12 @@ impl AccountBalance {
         }
     }
 
-    pub fn process_withdrawal(&mut self, withdrawal: Withdrawal) -> Result<(), String> {
+    pub fn process_withdrawal(&mut self, withdrawal: Withdrawal) -> Result<Withdrawal, String> {
         match self.available.checked_sub(withdrawal.amount) {
             Some(sub) => match sub.is_sign_positive() {
                 true => {
                     self.available = sub;
-                    Ok(())
+                    Ok(withdrawal)
                 }
                 false => {
                     let msg = format!(
@@ -249,7 +249,7 @@ mod tests {
     // Process Dispute
     /////////////////////
     // #[test]
-    // fn process_dispute_removes_amount_from_available_and_increases_held() {
+    // fn process_dispute_removes_disputed_amount_from_available_and_increases_held() {
     //     // Prepare data
     //     let mut ab = AccountBalance::new();
     //     ab.available = Decimal::new(200_000, 4);
@@ -268,6 +268,9 @@ mod tests {
     //     assert_eq!(ab.available, Decimal::new(50_000, 4));
     // }
 
+    /////////////////////
+    // total
+    /////////////////////
     #[test]
     fn total_makes_sum_available_and_held() {
         // Prepare data

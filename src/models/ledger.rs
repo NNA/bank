@@ -57,38 +57,75 @@ impl Ledger {
     //         Err("Not found".to_string())
     //     }
     // }
+
     pub fn find_tx_in_deposits(&mut self, deposit_id: TxId) -> Option<&mut Deposit> {
         self.deposits.get_mut(&deposit_id)
     }
 
+    // TODO: test
     pub fn find_tx_in_withdrawals(&mut self, withdrawal_id: TxId) -> Option<&mut Withdrawal> {
         self.withdrawals.get_mut(&withdrawal_id)
     }
 
+    // TODO: test
     pub fn make_deposit(self: &mut Ledger, deposit: Deposit) -> Result<(), String> {
         let account = self.find_or_create_account(deposit.account_id);
-        account.process_deposit(deposit)
+        let processed_deposit = account.process_deposit(deposit)?;
+        self.store_deposit(processed_deposit)
     }
 
+    // TODO: test
+    pub fn store_deposit(self: &mut Ledger, deposit: Deposit) -> Result<(), String> {
+        if self.deposits.contains_key(&deposit.id) {
+            return Err("The deposit already exists...".to_string());
+        } else {
+            self.deposits.insert(deposit.id, deposit);
+            Ok(())
+        }
+    }
+
+    // TODO: test
     pub fn make_withdrawal(self: &mut Ledger, withdrawal: Withdrawal) -> Result<(), String> {
         let account = self.find_or_create_account(withdrawal.account_id);
-        account.process_withdrawal(withdrawal)
+        let processed_withdrawal = account.process_withdrawal(withdrawal)?;
+        self.store_withdrawal(processed_withdrawal)
     }
 
-    pub fn make_dispute(&mut self, mut dispute: Dispute) -> Result<(), String> {
-        let account = self.find_or_create_account(dispute.account_id);
-        // let res = self.find_tx(dispute.disputed_tx_id);
+    // TODO: test
+    pub fn store_withdrawal(self: &mut Ledger, withdrawal: Withdrawal) -> Result<(), String> {
+        if self.withdrawals.contains_key(&withdrawal.id) {
+            return Err("The withdrawal already exists...".to_string());
+        } else {
+            self.withdrawals.insert(withdrawal.id, withdrawal);
+            Ok(())
+        }
+    }
 
-        // if let Some(deposit) = self.find_tx_in_deposits(dispute.disputed_tx_id) {
-        //     if deposit.account_id != dispute.account_id {
-        //         return Err("The disputed tx client is not the dispute client".to_string());
-        //     } else {
-        //         dispute.disputed_amount = Some(deposit.amount);
-        //         account.process_dispute(dispute);
-        //     }
-        // }
-
+    // TODO: test
+    pub fn complete_dispute(self: &mut Ledger, mut dispute: Dispute) -> Result<(), String> {
+        // let account = self.find_or_create_account(dispute.account_id);
+        if let Some(deposit) = self.find_tx_in_deposits(dispute.disputed_tx_id) {
+            if deposit.account_id != dispute.account_id {
+                return Err("The disputed tx client is not the dispute client".to_string());
+            } else {
+                dispute.disputed_amount = Some(deposit.amount);
+            }
+        } else {
+            if let Some(withdrawal) = self.find_tx_in_withdrawals(dispute.disputed_tx_id) {
+                if withdrawal.account_id != dispute.account_id {
+                    return Err("The disputed tx client is not the dispute client".to_string());
+                } else {
+                    dispute.disputed_amount = Some(withdrawal.amount);
+                }
+            }
+        }
         Ok(())
+    }
+
+    // TODO: test
+    pub fn make_dispute(self: &mut Ledger, complete_dispute: Dispute) -> Result<(), String> {
+        let account = self.find_or_create_account(complete_dispute.account_id);
+        account.process_dispute(complete_dispute)
     }
 }
 
@@ -144,7 +181,6 @@ mod tests {
         ledger.deposits.insert(1, deposit);
 
         // TODO try impprove this
-        // assert_eq!(ledger.find_or_create_account(1), &ac); //not allowed
         let found = ledger.find_tx_in_deposits(1).unwrap();
         assert_eq!(found.account_id, 3324);
         // assert_eq!(*found, deposit.account_id);
