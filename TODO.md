@@ -56,11 +56,14 @@
 
 - [x] Deposit
   - [x] Increase available amount
+  - [x] Store Deposit in index for later disputes 
   - [x] Edge case : Above max amount (Skip)
 - [ ] Withdrawal
   - [x] Decrease available amount
+  - [x] Store Withdrawal in index for later disputes
   - [x] Edge case : not enough funds (< 0)(Skip)
 - [ ] Dispute
+  - [ ] Lookup Tx (Deposit or withdrawal)
   - [ ] Increase held amount / Decrease available amount
   - [ ] Edge case : Tx not found (< 0)(Skip)
   - [ ] Edge case : not enough fund... no worry get negative
@@ -69,8 +72,8 @@
 
 - [ ] BalanceBook
   - [x] Find or create account
-  - [ ] Find tx
-  - [ ] Compute Total amount dynamically
+  - [x] Find existing tx (Deposit or Withdrawal)
+  - [x] Compute Total amount dynamically
 
 ## Generate output
 - [x] Write file
@@ -81,18 +84,12 @@
 - [ ] Help (-h on command line)
 - [ ] README
 
-
 ## Polish:
 - [ ] Document code
 - [ ] Apply Clippy
 - [ ] CI ?
-- [ ] Security : Avoid debug, public types 
-
-## Problems / Edges cases
-- [ ] Precision problems? 
+- [ ] Security : Avoid debug, public types
 
 Bonus:
 - Support transfer ?
 - Fraud status ?
-
-Explain: transaction id or timestamp missing.  
