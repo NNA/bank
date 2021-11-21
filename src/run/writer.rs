@@ -1,7 +1,7 @@
 use crate::models::ledger::AccountIndex;
 
 use csv::WriterBuilder;
-use log::debug;
+
 use std::error::Error;
 use std::io;
 
@@ -35,7 +35,7 @@ pub fn write_balances(account_balances: AccountIndex) -> Result<(), Box<dyn Erro
         wtr.write_field(id.to_string())?;
         wtr.write_field(balance.available.to_string())?;
         wtr.write_field(balance.held.to_string())?;
-        wtr.write_field("balance.total")?;
+        wtr.write_field(balance.total().to_string())?;
         wtr.write_field(balance.locked.to_string())?;
         wtr.write_record(None::<&[u8]>)?;
     }

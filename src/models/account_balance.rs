@@ -13,7 +13,6 @@ pub struct AccountBalance {
     pub available: Decimal,
     pub held: Decimal,
     pub locked: bool,
-    // total will be computed
 }
 
 impl AccountBalance {
@@ -21,6 +20,11 @@ impl AccountBalance {
         AccountBalance {
             ..Default::default()
         }
+    }
+
+    /// Total is computed because always equal to available + held
+    pub fn total(&self) -> Decimal {
+        self.available + self.held
     }
 
     pub fn process_deposit(&mut self, deposit: Deposit) -> Result<(), String> {
